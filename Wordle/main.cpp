@@ -6,7 +6,15 @@
 #include <termios.h>
 #include <unistd.h>
 #include <fstream>
+#include <algorithm>
 using namespace std;
+
+bool isValidGuess(string guess, vector<string>& validGuesses) {
+
+    string lowerGuess = guess;
+    transform(lowerGuess.begin(), lowerGuess.end(), lowerGuess.begin(), ::tolower);
+    return find(validGuesses.begin(), validGuesses.end(), lowerGuess) != validGuesses.end();
+}
 
 string getColoredInput() {
     string input = "";
@@ -80,29 +88,83 @@ bool wordle(string guess, string ans) {
 }
 int main() {
     srand(time(0));
-    vector<string> dict;
-    ifstream file("word.txt");
-    if(file.is_open()) {
+    
+    vector<string> answerWords;
+    ifstream answerFile("wordle-word.txt");
+    if(answerFile.is_open()) {
         string word;
-        while(file >> word) {
-            dict.push_back(word);
+        while(answerFile >> word) {
+            answerWords.push_back(word);
         }
-        file.close();
+        answerFile.close();
     } else {
-        dict = {"apple", "grape", "peach", "berry", "mango"};
-        cout << "word.txt not found, using default words." << endl;
+        answerWords = {"apple", "grape", "peach", "berry", "mango"};
+        cout << "wordle-word.txt not found, using default words." << endl;
     }
     
-    cout << "WELCOME TO WORDLE! GUESS THE 5-LETTER WORD." << endl;
-    string ans = dict[rand() % dict.size()];
+    vector<string> validGuesses;
+    ifstream guessFile("wordle-guess.txt");
+    if(guessFile.is_open()) {
+        string word;
+        while(guessFile >> word) {
+            validGuesses.push_back(word);
+        }
+        guessFile.close();
+    }
+    
+    cout << "WELCOME TO WORDLE! GUESS THE 5-LETTER WORD." << endl<<endl;
+    string ans = answerWords[rand() % answerWords.size()];
     string guess;
     int attempts = 6;
+    bool won = false;
+    vector<string> previousGuesses;
+    
     for(int i = 0; i < attempts; i++) {
-        guess = getColoredInput();
+        bool validWord = false;
+        while(!validWord) {
+            guess = getColoredInput();
+            
+            string lowerGuess = guess;
+            transform(lowerGuess.begin(), lowerGuess.end(), lowerGuess.begin(), ::tolower);
+            
+            if(!isValidGuess(guess, validGuesses)) {
+                cout << "\033[A\033[2K\r";
+                cout << "\033[31mNOT A VALID WORD!\033[0m" << endl;
+                usleep(500000); 
+                cout << "\033[A\033[2K\r"; 
+            } else if(find(previousGuesses.begin(), previousGuesses.end(), lowerGuess) != previousGuesses.end()) {
+
+                cout << "\033[A\033[2K\r";
+                cout << "\033[33mALREADY GUESSED!\033[0m" << endl;
+                usleep(500000); 
+                cout << "\033[A\033[2K\r"; 
+            } else {
+                validWord = true;
+                previousGuesses.push_back(lowerGuess);
+            }
+        }
+        
         if(wordle(guess, ans)) {
             printf("You guessed the word in %d attempts!\n", i + 1);
+            won = true;
             break;
         }
+    }
+    
+    if(!won) {
+        cout << "\nBetter luck next time!" << endl;
+        cout << "The word was: ";
+        
+        string green = "\033[42m\033[97m";
+        string reset = "\033[0m";
+        string upperAns = ans;
+        for(int i = 0; i < upperAns.size(); i++) {
+            upperAns[i] = toupper(upperAns[i]);
+        }
+        for(int i = 0; i < upperAns.size(); i++) {
+            cout << green << " " << upperAns[i] << " " << reset;
+        }
+        cout << endl;
     }
     
 }

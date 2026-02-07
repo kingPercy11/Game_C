@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <algorithm>
+#include <set>
 using namespace std;
 
 bool isValidGuess(string guess, vector<string>& validGuesses) {
@@ -117,7 +118,7 @@ int main() {
     string guess;
     int attempts = 6;
     bool won = false;
-    vector<string> previousGuesses;
+    set<string> previousGuesses;
     
     for(int i = 0; i < attempts; i++) {
         bool validWord = false;
@@ -132,7 +133,7 @@ int main() {
                 cout << "\033[31mNOT A VALID WORD!\033[0m" << endl;
                 usleep(500000); 
                 cout << "\033[A\033[2K\r"; 
-            } else if(find(previousGuesses.begin(), previousGuesses.end(), lowerGuess) != previousGuesses.end()) {
+            } else if(previousGuesses.find(lowerGuess) != previousGuesses.end()) {
 
                 cout << "\033[A\033[2K\r";
                 cout << "\033[33mALREADY GUESSED!\033[0m" << endl;
@@ -140,7 +141,7 @@ int main() {
                 cout << "\033[A\033[2K\r"; 
             } else {
                 validWord = true;
-                previousGuesses.push_back(lowerGuess);
+                previousGuesses.insert(lowerGuess);
             }
         }
         

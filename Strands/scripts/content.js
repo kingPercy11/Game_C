@@ -45,6 +45,19 @@ async function inputWordsToPage(results) {
     console.log("Inputting words to page...");
 
     for (const { word, path } of results) {
+
+        // Check if word is already found (any button is colored)
+        const isBlocked = path.some(cell => {
+            const btn = document.getElementById(cell.element.id);
+            const bgStyle = btn.style.backgroundColor;
+            return bgStyle && (bgStyle.includes("--strands-blue") || bgStyle.includes("--text-spangram"));
+        });
+
+        if (isBlocked) {
+            console.log(`Skipping blocked word: ${word}`);
+            continue;
+        }
+
         console.log(`Submitting: ${word}`);
 
         for (let i = 0; i < path.length; i++) {
@@ -53,12 +66,12 @@ async function inputWordsToPage(results) {
 
             if (button) {
                 button.click();
-                await sleep(100);
+                await sleep(1);
 
                 // Double-click last letter to submit
                 if (i === path.length - 1) {
                     button.click();
-                    await sleep(200);
+                    await sleep(1);
                 }
             }
         }

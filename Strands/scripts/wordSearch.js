@@ -29,13 +29,28 @@ window.getGrid = function () {
         for (let col = 0; col < GRID_WIDTH; col++) {
             const buttonId = `button-${row * GRID_WIDTH + col}`;
             const button = document.getElementById(buttonId);
+
+            // console.log(style.backgroundColor);
             if (button) {
-                gridRow.push({
-                    char: button.innerText.toLowerCase().trim(),
-                    element: button,
-                    r: row,
-                    c: col
-                });
+                // Check inline style for CSS variables as requested
+                const bgStyle = button.style.backgroundColor;
+                if (bgStyle && (bgStyle.includes("--text-spangram") || bgStyle.includes("--strands-blue"))) {
+                    gridRow.push({
+                        char: "#",
+                        element: button,
+                        r: row,
+                        c: col
+                    });
+                    continue;
+                }
+                else {
+                    gridRow.push({
+                        char: button.innerText.toLowerCase().trim(),
+                        element: button,
+                        r: row,
+                        c: col
+                    });
+                }
             } else {
                 console.warn(`Button not found: ${buttonId}`);
                 gridRow.push(null);
@@ -65,6 +80,10 @@ window.findAllWords = function (grid, trie) {
         if (!cell) return;
 
         const char = cell.char;
+
+        // Skip blocked cells (already found words)
+        if (char === "#") return;
+
         if (!parentNode.children[char]) return;
 
         const currentNode = parentNode.children[char];
@@ -109,5 +128,5 @@ window.findAllWords = function (grid, trie) {
 
     // Sort by length: shortest (4-letter) first
     return Array.from(uniqueResults, ([word, path]) => ({ word, path }))
-    // .sort((a, b) => a.word.length - b.word.length);
+        .sort((a, b) => b.word.length - a.word.length);
 };

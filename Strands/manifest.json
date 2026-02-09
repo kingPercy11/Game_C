@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Strands_Solver",
+    "name": "Strands Master",
     "version": "1.0",
     "description": "Finds and submits words in Strands.",
     "permissions": [

@@ -3,14 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Strands Solver</title>
+  <title>Strands Master</title>
   <link rel="stylesheet" href="popup.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@500;600;700&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h1>StrandsSolver</h1>
-    <button id="solveBtn">Start solving</button>
-    <div id="status"></div>
+  <div class="glass-container">
+    <div class="header">
+      <div class="logo-circle">
+        <img src="icons/icon16.png" alt="Logo" style="width: 32px; height: 32px; border-radius: 50%;">
+      </div>
+      <h1>Strands Master</h1>
+    </div>
+    <div class="content">
+      <div class="status-box" id="status-container">
+        <div id="status">Ready to solve</div>
+        <div id="timer" class="timer">0.0s</div>
+        <div class="loader"></div>
+      </div>
+
+      <button id="solveBtn" class="cta-button">
+        <span class="btn-text">Start Solving</span>
+        <img src="icons/icon16.png" alt="Logo" style="width: 24px; height: 24px; border-radius: 50%;">
+      </button>
+    </div>
   </div>
   <script src="popup.js"></script>
 </body>

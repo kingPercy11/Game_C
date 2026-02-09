@@ -130,3 +130,81 @@ window.findAllWords = function (grid, trie) {
     return Array.from(uniqueResults, ([word, path]) => ({ word, path }))
         .sort((a, b) => b.word.length - a.word.length);
 };
+
+/**
+ * Find all paths that use ALL remaining uncolored cells (Hamiltonian paths).
+ * @param {Array} grid - 8x6 grid of cell objects
+ * @returns {Array} Array of { word, path } objects.
+ */
+window.findSpangram = function (grid) {
+    const rows = grid.length;
+    const cols = grid[0].length;
+    let validPaths = [];
+    let totalUncolored = 0;
+
+    // Count uncolored cells
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            if (grid[r][c] && grid[r][c].char !== "#") {
+                totalUncolored++;
+            }
+        }
+    }
+
+    console.log(`Searching for full paths covering ${totalUncolored} letters...`);
+
+    // Helper DFS
+    function dfsFull(r, c, path, visited) {
+        if (validPaths.length >= 20) return; // Cap results
+
+        const cell = grid[r][c];
+        // Skip invalid or already used cells (marked #)
+        if (!cell || cell.char === "#") return;
+
+        visited.add(`${r},${c}`);
+        path.push(cell);
+
+        // Check if path uses all uncolored cells
+        if (path.length === totalUncolored) {
+            const word = path.map(p => p.char).join("");
+            validPaths.push({ word: word, path: [...path] });
+        } else {
+            // Continue DFS
+            // Optimization: Only continue if current path length < totalUncolored
+            if (path.length < totalUncolored) {
+                for (const [dr, dc] of DIRECTIONS) {
+                    const newRow = r + dr;
+                    const newCol = c + dc;
+                    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                        if (!visited.has(`${newRow},${newCol}`)) {
+                            dfsFull(newRow, newCol, path, visited);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Backtrack
+        visited.delete(`${r},${c}`);
+        path.pop();
+    }
+
+    // Start DFS from EVERY uncolored cell
+    //add cap here
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            if (grid[r][c] && grid[r][c].char !== "#") {
+                dfsFull(r, c, [], new Set());
+                // if (validPaths.length >= 20) break;
+            }
+        }
+        // if (validPaths.length >= 20) break;
+    }
+
+    if (validPaths.length > 0) {
+        console.log(`Found ${validPaths.length} candidate paths.`);
+        return validPaths;
+    }
+
+    return [];
+};

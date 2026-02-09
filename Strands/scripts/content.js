@@ -7,8 +7,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log("Received solve request from popup.");
 
         startSolver().then(async (result) => {
-            console.log("Solver finished. Found:", result.length, "words.");
+            console.log("Initial solver finished. Found:", result.length, "words.");
             await inputWordsToPage(result);
+
+            // Re-scan grid to see remaining uncolored cells
+            console.log("Checking for Spangram...");
+            await sleep(500); // Wait for UI update
+            const updatedGrid = getGrid();
+
+            // Check if there are any uncolored cells left (not '#')
+            const hasUncolored = updatedGrid.some(row => row.some(cell => cell && cell.char !== "#"));
+
+            if (hasUncolored) {
+                console.log("Uncolored cells found. Attempting to find Spangram...");
+                const spangram = findSpangram(updatedGrid);
+                if (spangram && spangram.length > 0) {
+                    console.log("Spangram found:", spangram[0].word);
+                    await inputWordsToPage(spangram);
+                    result.push(spangram[0]); // Add to results
+                } else {
+                    console.log("No Spangram found.");
+                }
+            } else {
+                console.log("Grid is complete. No Spangram search needed.");
+            }
+
             sendResponse({ status: "success", data: result });
         });
 

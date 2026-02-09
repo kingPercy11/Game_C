@@ -1,0 +1,70 @@
+// scripts/content.js
+// Main entry point - handles messages from popup and coordinates solving
+
+// Listens for messages from popup.js
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "solve_strands") {
+        console.log("Received solve request from popup.");
+
+        startSolver().then(async (result) => {
+            console.log("Solver finished. Found:", result.length, "words.");
+            await inputWordsToPage(result);
+            sendResponse({ status: "success", data: result });
+        });
+
+        return true; // Async response
+    }
+});
+
+/**
+ * Main solver function
+ */
+async function startSolver() {
+    console.log("Starting solver...");
+
+    // Load Trie dictionary
+    const trie = await loadTrieDictionary();
+    if (!trie) {
+        console.error("Failed to load dictionary");
+        return [];
+    }
+
+    // Extract grid from page (from wordSearch.js)
+    const grid = getGrid();
+
+    // Find all valid words (from wordSearch.js)
+    const results = findAllWords(grid, trie);
+
+    return results;
+}
+
+/**
+ * Submit found words to the page
+ */
+async function inputWordsToPage(results) {
+    console.log("Inputting words to page...");
+
+    for (const { word, path } of results) {
+        console.log(`Submitting: ${word}`);
+
+        for (let i = 0; i < path.length; i++) {
+            const cell = path[i];
+            const button = document.getElementById(cell.element.id);
+
+            if (button) {
+                button.click();
+                await sleep(100);
+
+                // Double-click last letter to submit
+                if (i === path.length - 1) {
+                    button.click();
+                    await sleep(200);
+                }
+            }
+        }
+    }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

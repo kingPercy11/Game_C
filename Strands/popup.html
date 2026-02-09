@@ -3,28 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Strands Grid Extractor</title>
+  <title>Strands Solver</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="container">
-    <h1>Strands Grid</h1>
-    <p class="status" id="status">Click to extract grid from Strands</p>
-    
-    <button id="extractBtn" class="btn-primary">Extract Grid</button>
-    
-    <div id="gridContainer" class="grid-container hidden">
-      <h2>Extracted Grid:</h2>
-      <div id="grid" class="grid"></div>
-      <button id="copyBtn" class="btn-secondary">Copy Grid</button>
-    </div>
-    
-    <div id="rawData" class="raw-data hidden">
-      <h3>Raw Data:</h3>
-      <pre id="rawOutput"></pre>
-    </div>
+    <h1>StrandsSolver</h1>
+    <button id="solveBtn">Start solving</button>
+    <div id="status"></div>
   </div>
-  
   <script src="popup.js"></script>
 </body>
 </html>

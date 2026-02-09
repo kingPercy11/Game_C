@@ -1,11 +1,11 @@
 {
     "manifest_version": 3,
-    "name": "Strands Word Finder",
+    "name": "Strands_Solver",
     "version": "1.0",
-    "description": "Find all valid words in NYT Strands puzzle grid",
+    "description": "Finds and submits words in Strands.",
     "permissions": [
-        "activeTab",
-        "scripting"
+        "scripting",
+        "activeTab"
     ],
     "host_permissions": [
         "https://www.nytimes.com/games/strands*"
@@ -18,6 +18,19 @@
             "128": "icons/icon128.png"
         }
     },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.nytimes.com/games/strands*"
+            ],
+            "js": [
+                "scripts/dictionary.js",
+                "scripts/wordSearch.js",
+                "scripts/content.js"
+            ],
+            "run_at": "document_idle"
+        }
+    ],
     "web_accessible_resources": [
         {
             "resources": [
@@ -27,10 +40,5 @@
                 "https://www.nytimes.com/*"
             ]
         }
-    ],
-    "icons": {
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
-    }
+    ]
 }

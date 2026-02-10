@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             // Re-scan grid to see remaining uncolored cells
             console.log("Checking for Spangram...");
-            await sleep(500); // Wait for UI update
+            await sleep(1); // Wait for UI update
             const updatedGrid = getGrid();
 
             // Check if there are any uncolored cells left (not '#')

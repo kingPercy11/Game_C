@@ -4,14 +4,14 @@
 // Listens for messages from popup.js
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "solve_strands") {
-        console.log("Received solve request from popup.");
+        //console.log("Received solve request from popup.");
 
         startSolver().then(async (result) => {
-            console.log("Initial solver finished. Found:", result.length, "words.");
+            //console.log("Initial solver finished. Found:", result.length, "words.");
             await inputWordsToPage(result);
 
             // Re-scan grid to see remaining uncolored cells
-            console.log("Checking for Spangram...");
+            //console.log("Checking for Spangram...");
             await sleep(1); // Wait for UI update
             const updatedGrid = getGrid();
 
@@ -19,17 +19,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             const hasUncolored = updatedGrid.some(row => row.some(cell => cell && cell.char !== "#"));
 
             if (hasUncolored) {
-                console.log("Uncolored cells found. Attempting to find Spangram...");
+                //console.log("Uncolored cells found. Attempting to find Spangram...");
                 const spangram = findSpangram(updatedGrid);
                 if (spangram && spangram.length > 0) {
-                    console.log("Spangram found:", spangram[0].word);
+                    //console.log("Spangram found:", spangram[0].word);
                     await inputWordsToPage(spangram);
                     result.push(spangram[0]); // Add to results
                 } else {
-                    console.log("No Spangram found.");
+                    //console.log("No Spangram found.");
                 }
             } else {
-                console.log("Grid is complete. No Spangram search needed.");
+                //console.log("Grid is complete. No Spangram search needed.");
             }
 
             sendResponse({ status: "success", data: result });
@@ -43,12 +43,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
  * Main solver function
  */
 async function startSolver() {
-    console.log("Starting solver...");
+    //console.log("Starting solver...");
 
     // Load Trie dictionary
     const trie = await loadTrieDictionary();
     if (!trie) {
-        console.error("Failed to load dictionary");
+        //console.error("Failed to load dictionary");
         return [];
     }
 
@@ -65,7 +65,7 @@ async function startSolver() {
  * Submit found words to the page
  */
 async function inputWordsToPage(results) {
-    console.log("Inputting words to page...");
+    ////console.log("Inputting words to page...");
 
     for (const { word, path } of results) {
 
@@ -77,11 +77,11 @@ async function inputWordsToPage(results) {
         });
 
         if (isBlocked) {
-            console.log(`Skipping blocked word: ${word}`);
+            //console.log(`Skipping blocked word: ${word}`);
             continue;
         }
 
-        console.log(`Submitting: ${word}`);
+        //console.log(`Submitting: ${word}`);
 
         for (let i = 0; i < path.length; i++) {
             const cell = path[i];

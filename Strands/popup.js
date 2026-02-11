@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Start Timer
     startTime = Date.now();
     timerDisplay.innerText = "0.00s";
-    timerInterval = setInterval(updateTimer, 50);
+    timerInterval = setInterval(updateTimer, 1);
 
     // Get the current active tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

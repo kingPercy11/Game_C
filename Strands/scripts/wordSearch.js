@@ -30,7 +30,7 @@ window.getGrid = function () {
             const buttonId = `button-${row * GRID_WIDTH + col}`;
             const button = document.getElementById(buttonId);
 
-            // console.log(style.backgroundColor);
+            // //console.log(style.backgroundColor);
             if (button) {
                 // Check inline style for CSS variables as requested
                 const bgStyle = button.style.backgroundColor;
@@ -52,14 +52,14 @@ window.getGrid = function () {
                     });
                 }
             } else {
-                console.warn(`Button not found: ${buttonId}`);
+                //console.warn(`Button not found: ${buttonId}`);
                 gridRow.push(null);
             }
         }
         grid.push(gridRow);
     }
 
-    console.log("Grid extracted");
+    //console.log("Grid extracted");
     return grid;
 };
 
@@ -124,7 +124,7 @@ window.findAllWords = function (grid, trie) {
         }
     }
 
-    console.log(`Found ${uniqueResults.size} unique words`);
+    //console.log(`Found ${uniqueResults.size} unique words`);
 
     // Sort by length: shortest (4-letter) first
     return Array.from(uniqueResults, ([word, path]) => ({ word, path }))
@@ -151,7 +151,7 @@ window.findSpangram = function (grid) {
         }
     }
 
-    console.log(`Searching for full paths covering ${totalUncolored} letters...`);
+    //console.log(`Searching for full paths covering ${totalUncolored} letters...`);
 
     // Helper DFS
     function dfsFull(r, c, path, visited) {
@@ -202,7 +202,7 @@ window.findSpangram = function (grid) {
     }
 
     if (validPaths.length > 0) {
-        console.log(`Found ${validPaths.length} candidate paths.`);
+        //console.log(`Found ${validPaths.length} candidate paths.`);
         return validPaths;
     }
 

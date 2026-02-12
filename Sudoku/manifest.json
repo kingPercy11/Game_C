@@ -1,0 +1,33 @@
+{
+    "manifest_version": 3,
+    "name": "Sudoku Master",
+    "version": "1.0",
+    "description": "Automatically solves NYT Sudoku puzzles.",
+    "permissions": [
+        "scripting",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "https://www.nytimes.com/puzzles/sudoku/*"
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "48": "icons/icon48.png",
+            "128": "icons/icon128.png"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.nytimes.com/puzzles/sudoku/*"
+            ],
+            "js": [
+                "scripts/solver.js",
+                "scripts/content.js"
+            ],
+            "run_at": "document_idle"
+        }
+    ]
+}
